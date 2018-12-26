@@ -9,8 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Redirects the user to the Google login page or their profile page
- * if they're already logged in.
+ * Redirects the user to the Google login page or their profile page if they're already logged in.
  */
 @WebServlet("/login")
 public class LoginServlet extends HttpServlet {
@@ -19,14 +18,14 @@ public class LoginServlet extends HttpServlet {
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
     UserService userService = UserServiceFactory.getUserService();
-    
+
     // If the user is already logged in, redirect to their profile
-    if (userService.isUserLoggedIn()) {	
-    	String user = userService.getCurrentUser().getEmail();
-		response.sendRedirect("/profile.html?user=" + user);
-		return;
-	}
-    
+    if (userService.isUserLoggedIn()) {
+      String user = userService.getCurrentUser().getEmail();
+      response.sendRedirect("/user-page.html?user=" + user);
+      return;
+    }
+
     // Redirect to Google login page. That page will then redirect back to /login,
     // which will be handled by the above if statement.
     String googleLoginUrl = userService.createLoginURL("/login");
