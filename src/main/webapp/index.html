@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>CodeU< Starter Project/title>
+
+  <script>
+    /**
+     * Adds a login or logout link to the page, depending on whether the user is already logged in.
+     */
+    function showLoginOrLogoutLink(){
+      fetch('/login-status').then((response) => {
+        return response.json();
+      }).then((loginStatus) => {
+    	  // TODO: add login / logout links to page
+	      if(loginStatus.isLoggedIn){
+	      }
+	      else{
+	      }
+      });
+    }
+  </script>
+
+</head>
+<body>
+  <h1>CodeU Starter PRoject</h1>
+  <p>This is the CodeU starter project.</p>
+  
+  <p><a href="/login">Login</a></p>
+  <p><a href="/logout">Logout</a></p>
+</body>
+</html>

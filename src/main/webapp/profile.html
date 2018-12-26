@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Profile</title>
+<meta charset="UTF-8">
+<style>
+	#content {
+		width: 800px;
+		margin-left: auto;
+		margin-right: auto;
+	}
+	
+	#text{
+		display: block;
+		margin-bottom: 10px;
+		width: 500px;
+	}
+	
+	.message-div {
+		border: thin solid black;
+		border-radius: 5px;
+		margin-top: 20px;
+	}
+	
+	.message-header {
+		border-bottom: thin solid black;
+		clear: both;
+		height: 30px;
+	}
+	
+	.message-body {
+		margin: 5px;
+	}
+	
+	.left-align {
+		float: left;
+		margin: 5px;
+	}
+	
+	.right-align {
+		float: right;
+		margin: 5px;
+	}
+	
+	.hidden {
+		display: none;
+	}
+</style>
+
+<script>
+  
+  // Get ?user=XYZ parameter value
+  const urlParams = new URLSearchParams(window.location.search);
+  const parameterUsername = urlParams.get('user');
+  
+  //URL must include ?user=XYZ parameter. If not, redirect to homepage.
+  if(!parameterUsername){
+  	window.location.replace('/index.html');
+  }
+  
+  function setProfileHeading(){
+    document.getElementById('profile-heading').innerHTML = parameterUsername;
+  }
+  
+  // Show the form if the user is logged in and viewing their own profile.
+  function showFormIfViewingSelf(){
+    fetch('/login-status').then((response) => {
+      return response.json();
+    }).then((loginStatus) => {
+	  if(loginStatus.isLoggedIn && loginStatus.username == parameterUsername){
+        const messageForm = document.getElementById('message-form');
+        messageForm.classList.remove('hidden');
+	  }
+    });
+  }
+  
+  
+  // Fetch messages and add them to the page.
+  function fetchMessages(){
+    const url = '/messages?user=' + parameterUsername;
+    fetch(url).then((response) => {
+      return response.json();
+    }).then((messages) => {
+      const messageContainer = document.getElementById('message-container');
+      if(messages.length == 0){
+    	  messageContainer.innerHTML = '<p>This user has no posts yet.</p>';
+      }
+      else{
+    	  messageContainer.innerHTML = '';  
+      }
+      messages.forEach((message) => {  
+    	  const messageDiv = buildMessageDiv(message);
+    	  messageContainer.appendChild(messageDiv);
+      });
+    });
+  }
+  
+  function buildMessageDiv(message){
+	  const usernameDiv = document.createElement('div');
+	  usernameDiv.classList.add("left-align");
+	  usernameDiv.appendChild(document.createTextNode(message.user));
+	  
+	  const timeDiv = document.createElement('div');
+	  timeDiv.classList.add('right-align');
+	  timeDiv.appendChild(document.createTextNode(new Date(message.timestamp)));
+	  
+	  const headerDiv = document.createElement('div');
+	  headerDiv.classList.add('message-header');
+	  headerDiv.appendChild(usernameDiv);
+	  headerDiv.appendChild(timeDiv);
+	  
+	  const bodyDiv = document.createElement('div');
+	  bodyDiv.classList.add('message-body');
+	  bodyDiv.innerHTML = message.text;
+	  
+	  const messageDiv = document.createElement('div');
+	  messageDiv.classList.add("message-div");
+	  messageDiv.appendChild(headerDiv);
+	  messageDiv.appendChild(bodyDiv);
+	  
+	  return messageDiv;
+  }
+  
+  // Fetch data and populate the UI of the page.
+  function buildUI(){	  
+    setProfileHeading();
+	showFormIfViewingSelf();
+	fetchMessages();
+  }
+</script>
+</head>
+<body onload="buildUI()">
+	<div id="content">
+		<h1 id="profile-heading">Profile</h1>
+		
+		<form id="message-form" action="/messages" method="POST" class="hidden">
+		  <textarea name="text" id="text"></textarea>
+		  <br/>
+		  <input type="submit" value="Submit">
+		</form>
+		<hr/>
+
+		<div id="message-container">Loading...</div>
+	</div>
+</body>
+</html>

@@ -1,0 +1,6 @@
+indexes:
+- kind: Message
+  properties:
+  - name: user
+  - name: timestamp
+    direction: desc
