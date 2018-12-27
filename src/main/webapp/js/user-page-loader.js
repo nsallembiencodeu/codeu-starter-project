@@ -9,7 +9,7 @@ if (!parameterUsername) {
 
 /** Sets the page title based on the URL parameter username. */
 function setPageTitle() {
-  document.getElementById('profile-heading').innerText = parameterUsername;
+  document.getElementById('page-title').innerText = parameterUsername;
   document.title = parameterUsername + ' - User Page';
 }
 
