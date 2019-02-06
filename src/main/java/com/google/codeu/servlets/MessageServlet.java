@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019 Google Inc.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.google.codeu.servlets;
 
 import com.google.appengine.api.users.UserService;
@@ -14,9 +30,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.safety.Whitelist;
 
-/**
- * Handles fetching and saving {@link Message} instances.
- */
+/** Handles fetching and saving {@link Message} instances. */
 @WebServlet("/messages")
 public class MessageServlet extends HttpServlet {
 
@@ -28,7 +42,8 @@ public class MessageServlet extends HttpServlet {
   }
 
   /**
-   * Responds with a JSON representation of {@link Message} data for a specific user.
+   * Responds with a JSON representation of {@link Message} data for a specific user. Responds with
+   * an empty array if the user is not provided.
    */
   @Override
   public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -39,7 +54,7 @@ public class MessageServlet extends HttpServlet {
 
     if (user == null || user.equals("")) {
       // Request is invalid, return empty array
-      response.getOutputStream().println("[]");
+      response.getWriter().println("[]");
       return;
     }
 
@@ -47,12 +62,10 @@ public class MessageServlet extends HttpServlet {
     Gson gson = new Gson();
     String json = gson.toJson(messages);
 
-    response.getOutputStream().println(json);
+    response.getWriter().println(json);
   }
 
-  /**
-   * Stores a new {@link Message}.
-   */
+  /** Stores a new {@link Message}. */
   @Override
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
@@ -71,4 +84,3 @@ public class MessageServlet extends HttpServlet {
     response.sendRedirect("/user-page.html?user=" + user);
   }
 }
-
